@@ -16,10 +16,8 @@ public class Aluguel {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime dataPedido;
 
-    @Temporal(TemporalType.DATE)
     private LocalDateTime dataEntrega;
 
-    @Temporal(TemporalType.DATE)
     private LocalDateTime dataDevolucao;
 
     private BigDecimal valorTotal;
