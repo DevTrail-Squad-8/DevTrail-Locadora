@@ -22,6 +22,4 @@ public abstract class Pessoa {
 
     @Enumerated(EnumType.STRING)
     private Sexo sexo;
-
-
 }
