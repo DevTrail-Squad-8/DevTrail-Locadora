@@ -22,6 +22,7 @@ public abstract class Pessoa {
     private LocalDate dataNascimento;
 
     private String cpf;
+    private String email;
 
     @Enumerated(EnumType.STRING)
     private Sexo sexo;
