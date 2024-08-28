@@ -1,17 +1,12 @@
 package com.solutis.locadoraVeiculos.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
-@Entity
+@MappedSuperclass
 public abstract class Pessoa {
 
     @Id
@@ -20,8 +15,8 @@ public abstract class Pessoa {
 
     private String nome;
 
-    @Temporal(TemporalType.DATE)
-    private Data dataNascimento;
+    @Column(name = "data_nascimento")
+    private LocalDate dataNascimento;
 
     private String cpf;
 

@@ -5,18 +5,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
-import java.math.BigDecimal;
 
 @Data
 @Entity
-public class Carro {
+public class Fabricante {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String placa;
-    private String chassi;
-    private String cor;
-    private BigDecimal valorTotal;
+    private String nome;
 }
