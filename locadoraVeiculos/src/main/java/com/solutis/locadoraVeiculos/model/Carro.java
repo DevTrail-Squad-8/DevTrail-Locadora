@@ -24,4 +24,8 @@ public class Carro {
 
     @Column(nullable = false)
     private BigDecimal valorTotal;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Categoria categoria;
 }
