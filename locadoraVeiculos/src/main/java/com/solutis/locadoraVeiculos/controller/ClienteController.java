@@ -11,22 +11,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("cliente")
+@RequestMapping("/cliente")
 public class ClienteController {
 
     @Autowired
-    private ClienteService clienterService;
+    private ClienteService clienteService;
 
     @PostMapping
     public ResponseEntity<Cliente> cadastrarCliente(@RequestBody Cliente cliente){
         try {
-            Cliente novoCliente = clienterService.inserir(cliente);
+            Cliente novoCliente = clienteService.inserir(cliente);
             return ResponseEntity.status(HttpStatus.CREATED).body(novoCliente);
-
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
     }
-
 }

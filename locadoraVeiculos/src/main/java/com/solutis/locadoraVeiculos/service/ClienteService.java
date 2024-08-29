@@ -20,7 +20,7 @@ public class ClienteService {
             throw new RuntimeException("Cliente com o CPF já cadastrado.");
         }
         Optional<Cliente> clienteMesmoEmail = clienteRepository.findByEmail(cliente.getEmail());
-        if (clienteMesmoCpf.isPresent()) {
+        if (clienteMesmoEmail.isPresent()) {
             throw new RuntimeException("Cliente com o Email já cadastrado.");
         }
 

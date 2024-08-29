@@ -1,16 +1,13 @@
 package com.solutis.locadoraVeiculos.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import lombok.Data;
 
 @Data
 @Entity
+@Table(name = "cliente")
 public abstract class Pessoa {
 
     @Id
