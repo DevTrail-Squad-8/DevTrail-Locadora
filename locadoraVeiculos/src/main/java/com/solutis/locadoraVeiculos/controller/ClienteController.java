@@ -23,6 +23,7 @@ public class ClienteController {
             Cliente novoCliente = clienteService.inserir(cliente);
             return ResponseEntity.status(HttpStatus.CREATED).body(novoCliente);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
