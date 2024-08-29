@@ -2,6 +2,8 @@ package com.solutis.locadoraVeiculos.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -21,4 +23,14 @@ public class Aluguel {
     private LocalDateTime dataDevolucao;
 
     private BigDecimal valorTotal;
+
+    @ManyToOne
+    @JoinColumn(name = "carro_id")
+    private Carro carro;
+
+    @OneToOne
+    private ApoliceSeguro apoliceSeguro;
+
+    @ManyToOne
+    private Cliente cliente;
 }
