@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import lombok.Data;
 import java.math.BigDecimal;
 
@@ -19,4 +20,7 @@ public class ApoliceSeguro {
     private boolean protecaoTerceiro;
     private boolean protecaoCausasNaturais;
     private boolean protecaoRoubo;
+
+    @OneToOne(mappedBy = "apoliceSeguro")
+    private Aluguel aluguel;
 }
