@@ -24,14 +24,12 @@ public class Carro {
     private String cor;
 
     @Column(nullable = false)
-    private BigDecimal valorTotal;
+    private BigDecimal valorDiaria;
 
-<<<<<<< HEAD
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Categoria categoria;
-}
-=======
+
     @ManyToMany
     private List<Acessorio> acessorios;
 
@@ -40,6 +38,4 @@ public class Carro {
 
     @OneToMany(mappedBy = "carro")
     private List<Aluguel> alugueis;
-    
 }
->>>>>>> fe0ff53c2665c136fd272dd98bb3da990386cdbc
