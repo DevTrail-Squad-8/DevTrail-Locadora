@@ -13,8 +13,15 @@ public class Carro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String placa;
+
+    @Column(nullable = false)
     private String chassi;
+
+    @Column(nullable = false)
     private String cor;
+
+    @Column(nullable = false)
     private BigDecimal valorTotal;
 }
