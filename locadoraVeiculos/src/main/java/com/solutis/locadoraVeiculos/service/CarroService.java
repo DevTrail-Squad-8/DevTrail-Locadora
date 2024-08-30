@@ -31,7 +31,7 @@ public class CarroService {
             carro.setPlaca(carroDetails.getPlaca());
             carro.setChassi(carroDetails.getChassi());
             carro.setCor(carroDetails.getCor());
-            carro.setValorTotal(carroDetails.getValorTotal());
+            carro.setValorDiaria(carroDetails.getValorDiaria());
             return carroRepository.save(carro);
         });
     }

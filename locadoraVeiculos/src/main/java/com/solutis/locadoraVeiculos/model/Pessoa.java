@@ -5,8 +5,7 @@ import java.time.LocalDate;
 import lombok.Data;
 
 @Data
-@Entity
-@Table(name = "cliente")
+@MappedSuperclass
 public abstract class Pessoa {
 
     @Id
