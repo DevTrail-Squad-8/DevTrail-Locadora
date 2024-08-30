@@ -38,4 +38,7 @@ public class Carro {
 
     @OneToMany(mappedBy = "carro")
     private List<Aluguel> alugueis;
+
+    @Column(nullable = false)
+    private String imagem;
 }
