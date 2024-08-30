@@ -1,7 +1,7 @@
 package com.solutis.locadoraVeiculos.service;
 
 import com.solutis.locadoraVeiculos.dto.ClienteDTO;
-import com.solutis.locadoraVeiculos.exception.ClienteNotFoundException;
+import com.solutis.locadoraVeiculos.exception.ResourceNotFoundException;
 import com.solutis.locadoraVeiculos.exception.DuplicateEmailException;
 import com.solutis.locadoraVeiculos.exception.InvalidDataException;
 import com.solutis.locadoraVeiculos.mapper.DozerMapper;
@@ -36,7 +36,7 @@ public class ClienteService {
 
     public ClienteDTO update(Long id, ClienteDTO clienteDTO) {
         Cliente existingCliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new ClienteNotFoundException("Cliente não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
 
         DozerMapper.updateObject(clienteDTO, existingCliente);
 
@@ -46,7 +46,7 @@ public class ClienteService {
 
     public boolean delete(Long id) {
         Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new ClienteNotFoundException("Cliente não encontrado com o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com o ID: " + id));
         clienteRepository.delete(cliente);
         return true;
     }

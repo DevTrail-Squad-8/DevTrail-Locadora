@@ -1,6 +1,6 @@
 package com.solutis.locadoraVeiculos.exception.handler;
 
-import com.solutis.locadoraVeiculos.exception.ClienteNotFoundException;
+import com.solutis.locadoraVeiculos.exception.ResourceNotFoundException;
 import com.solutis.locadoraVeiculos.exception.DuplicateEmailException;
 import com.solutis.locadoraVeiculos.exception.ExceptionResponse;
 import com.solutis.locadoraVeiculos.exception.InvalidDataException;
@@ -27,9 +27,9 @@ public class CustomizedResponseEntityExceptionHandler {
         return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(ClienteNotFoundException.class)
+    @ExceptionHandler(ResourceNotFoundException.class)
     public final ResponseEntity<ExceptionResponse> handleNotFoundExceptions(
-            ClienteNotFoundException ex, WebRequest request) {
+            ResourceNotFoundException ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(
                 new Date(),
                 ex.getMessage(),
