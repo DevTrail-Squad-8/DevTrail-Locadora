@@ -1,6 +1,6 @@
 package com.solutis.locadoraVeiculos.controller;
 
-import com.solutis.locadoraVeiculos.model.Cliente;
+import com.solutis.locadoraVeiculos.dto.ClienteDTO;
 import com.solutis.locadoraVeiculos.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,10 +18,10 @@ public class ClienteController {
     private ClienteService clienteService;
 
     @PostMapping
-    public ResponseEntity<Cliente> cadastrarCliente(@RequestBody Cliente cliente){
+    public ResponseEntity<ClienteDTO> cadastrarCliente(@RequestBody ClienteDTO clienteDTO) {
         try {
-            Cliente novoCliente = clienteService.inserir(cliente);
-            return ResponseEntity.status(HttpStatus.CREATED).body(novoCliente);
+            ClienteDTO novoClienteDTO = clienteService.create(clienteDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(novoClienteDTO);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
