@@ -1,6 +1,9 @@
 package com.solutis.locadoraVeiculos.service;
 
 import com.solutis.locadoraVeiculos.dto.ClienteDTO;
+import com.solutis.locadoraVeiculos.exception.ClienteNotFoundException;
+import com.solutis.locadoraVeiculos.exception.DuplicateEmailException;
+import com.solutis.locadoraVeiculos.exception.InvalidDataException;
 import com.solutis.locadoraVeiculos.mapper.DozerMapper;
 import com.solutis.locadoraVeiculos.model.Cliente;
 import com.solutis.locadoraVeiculos.repository.ClienteRepository;
@@ -16,28 +19,36 @@ public class ClienteService {
     private ClienteRepository clienteRepository;
 
     public ClienteDTO create(ClienteDTO clienteDTO) {
+        clienteRepository.findByEmail(clienteDTO.getEmail())
+                .ifPresent(cliente -> {
+                    throw new DuplicateEmailException("Email já cadastrado");
+                });
+
+        if (clienteDTO.getNome() == null || clienteDTO.getNome().isEmpty()) {
+            throw new InvalidDataException("Nome não pode ser vazio");
+        }
+
         Cliente cliente = DozerMapper.parseObject(clienteDTO, Cliente.class);
         Cliente savedCliente = clienteRepository.save(cliente);
         return DozerMapper.parseObject(savedCliente, ClienteDTO.class);
     }
 
+
     public ClienteDTO update(Long id, ClienteDTO clienteDTO) {
-        return clienteRepository.findById(id)
-                .map(existingCliente -> {
-                    DozerMapper.updateObject(clienteDTO, existingCliente);
-                    Cliente updatedCliente = clienteRepository.save(existingCliente);
-                    return DozerMapper.parseObject(updatedCliente, ClienteDTO.class);
-                })
-                .orElse(null);
+        Cliente existingCliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new ClienteNotFoundException("Cliente não encontrado"));
+
+        DozerMapper.updateObject(clienteDTO, existingCliente);
+
+        Cliente updatedCliente = clienteRepository.save(existingCliente);
+        return DozerMapper.parseObject(updatedCliente, ClienteDTO.class);
     }
 
     public boolean delete(Long id) {
-        return clienteRepository.findById(id)
-                .map(cliente -> {
-                    clienteRepository.delete(cliente);
-                    return true;
-                })
-                .orElse(false);
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new ClienteNotFoundException("Cliente não encontrado com o ID: " + id));
+        clienteRepository.delete(cliente);
+        return true;
     }
 
     public Optional<ClienteDTO> findById(Long id) {
