@@ -2,9 +2,7 @@ package com.solutis.locadoraVeiculos.model;
 
 import jakarta.persistence.*;
 import java.util.List;
-import lombok.Data;
 
-@Data
 @Entity
 public class Cliente extends Pessoa {
 
@@ -13,4 +11,20 @@ public class Cliente extends Pessoa {
 
     @OneToMany(mappedBy = "cliente")
     private List<Aluguel> alugueis;
+
+    public String getNumeroCNH() {
+        return numeroCNH;
+    }
+
+    public void setNumeroCNH(String numeroCNH) {
+        this.numeroCNH = numeroCNH;
+    }
+
+    public List<Aluguel> getAlugueis() {
+        return alugueis;
+    }
+
+    public void setAlugueis(List<Aluguel> alugueis) {
+        this.alugueis = alugueis;
+    }
 }
