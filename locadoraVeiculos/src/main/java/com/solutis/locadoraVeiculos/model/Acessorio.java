@@ -1,24 +1,17 @@
 package com.solutis.locadoraVeiculos.model;
 
-import java.util.List;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
 @Entity
+@Table(name = "Acessorio")
 public class Acessorio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String descricao;
-
-    @ManyToMany(mappedBy = "acessorios")
-    private List<Carro> carros;
 }

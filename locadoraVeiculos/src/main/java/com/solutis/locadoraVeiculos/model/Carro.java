@@ -2,6 +2,7 @@ package com.solutis.locadoraVeiculos.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -31,9 +32,15 @@ public class Carro {
     private Categoria categoria;
 
     @ManyToMany
+    @JoinTable(
+            name = "Carro_Acessorio",
+            joinColumns = @JoinColumn(name = "carro_id"),
+            inverseJoinColumns = @JoinColumn(name = "acessorio_id")
+    )
     private List<Acessorio> acessorios;
 
     @ManyToOne
+    @JoinColumn(name = "modelo_carro_id")
     private ModeloCarro modeloCarro;
 
     @OneToMany(mappedBy = "carro")

@@ -14,7 +14,7 @@ public class CarroDTO {
     private String cor;
     private BigDecimal valorDiaria;
     private Categoria categoria;
+    private List<AcessorioDTO> acessorios;
+    private ModeloCarroDTO modeloCarro;
     private String imagem;
-    private List<String> acessorios;
-    private String modeloCarro;
 }
