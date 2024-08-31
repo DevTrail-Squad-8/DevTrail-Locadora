@@ -32,6 +32,9 @@ Este é um projeto de exemplo de uma aplicação Spring Boot 3.3 que simula o fu
    mvn spring-boot:run
    ```
 
-3. **Acesse a documentação da API**: 
+## Acesse a documentação da API: 
 
    Acesse a documentação da API em [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html).
+## Acesse o banco de dados H2: 
+
+   Acesse o banco de dados H2 em [http://localhost:8080/database](http://localhost:8080/database).
