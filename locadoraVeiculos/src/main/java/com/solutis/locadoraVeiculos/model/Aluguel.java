@@ -2,6 +2,7 @@ package com.solutis.locadoraVeiculos.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import jakarta.persistence.*;
 
@@ -30,6 +31,9 @@ public class Aluguel {
 
     @ManyToOne
     private Cliente cliente;
+
+    @Enumerated(EnumType.STRING)
+    private StatusAluguel status;
 
     public Long getId() {
         return id;
@@ -93,5 +97,18 @@ public class Aluguel {
 
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
+    }
+
+    public StatusAluguel getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusAluguel status){
+        this.status = status;
+    }
+
+    public void calcularValorTotal(BigDecimal tarifaDiaria) {
+        long dias = ChronoUnit.DAYS.between(dataEntrega, dataDevolucao);
+        this.valorTotal = tarifaDiaria.multiply(BigDecimal.valueOf(dias));
     }
 }
