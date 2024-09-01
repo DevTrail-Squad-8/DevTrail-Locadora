@@ -7,23 +7,21 @@ import com.solutis.locadoraVeiculos.exception.DuplicateEmailException;
 import com.solutis.locadoraVeiculos.mapper.DozerMapper;
 import com.solutis.locadoraVeiculos.model.Motorista;
 import com.solutis.locadoraVeiculos.repository.MotoristaRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.solutis.locadoraVeiculos.mapper.DozerMapper;
-
-import java.util.List;
 
 @Service
 public class MotoristaService {
 
-    private static final Logger logger = LoggerFactory.getLogger(MotoristaService.class);
+    private Logger logger = Logger.getLogger(MotoristaService.class.getName());
 
     @Autowired
     private MotoristaRepository repository;
-
-  
 
     public MotoristaDto create(MotoristaDto motoristaDto) {
 
@@ -34,20 +32,28 @@ public class MotoristaService {
         if (emailExists(motoristaDto.getEmail()))
             throw new DuplicateEmailException("Erro! Email já registrado.");
 
-        Motorista motorista = DozerMapper.parseObject(motoristaDto, Motorista.class);
+        Motorista motorista = new Motorista();
+        BeanUtils.copyProperties(motoristaDto, motorista);
+
         motorista = repository.save(motorista);
 
-        return DozerMapper.parseObject(motorista, MotoristaDto.class);
+        MotoristaDto motoristaCriado = new MotoristaDto();
+        BeanUtils.copyProperties(motorista, motoristaCriado);
+
+        return motoristaCriado;
     }
 
     public MotoristaDto findById(Long id) {
 
         logger.info("Buscando um motorista!");
 
-        Motorista motorista = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Nenhum registro encontrado para este ID!"));
+        Motorista motorista = repository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("Nenhum registro encontrado para este ID!"));
 
-        return DozerMapper.parseObject(motorista, MotoristaDto.class);
+        MotoristaDto MotoristaDto = new MotoristaDto();
+        BeanUtils.copyProperties(motorista, MotoristaDto);
+
+        return MotoristaDto;
     }
 
     public List<MotoristaDto> findAll() {
@@ -55,7 +61,13 @@ public class MotoristaService {
         logger.info("Buscando todos os motoristas!");
 
         List<Motorista> listaMotorista = repository.findAll();
-        return DozerMapper.parseListObjects(listaMotorista, MotoristaDto.class);
+        return listaMotorista.stream()
+                .map(motorista -> {
+                    MotoristaDto motoristaDto = new MotoristaDto();
+                    BeanUtils.copyProperties(motorista, motoristaDto);
+                    return motoristaDto;
+                })
+                .collect(Collectors.toList());
     }
 
     public MotoristaDto update(MotoristaDto motoristaDto) {
@@ -64,13 +76,14 @@ public class MotoristaService {
 
         logger.info("Atualizando um motorista!");
 
-        Motorista entity = repository.findById(motoristaDto.getId())
+        var entity = repository.findById(motoristaDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Nenhum registro encontrado para este ID!"));
 
         if (!entity.getEmail().equals(motoristaDto.getEmail()) && emailExists(motoristaDto.getEmail()))
             throw new DuplicateEmailException("Erro! Email já registrado.");
 
-            DozerMapper.updateObject(motoristaDto, entity);
+        BeanUtils.copyProperties(motoristaDto, entity);
+
         repository.save(entity);
 
         return motoristaDto;
@@ -80,7 +93,7 @@ public class MotoristaService {
 
         logger.info("Deletando um motorista!");
 
-        Motorista entity = repository.findById(id)
+        var entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Nenhum registro encontrado para este ID!"));
         repository.delete(entity);
     }
