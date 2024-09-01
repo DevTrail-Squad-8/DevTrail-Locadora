@@ -5,12 +5,6 @@ Este é um projeto de exemplo de uma aplicação Spring Boot 3.3 que simula o fu
 ## Tecnologias Utilizadas
 
 - **Java 21**
-
-Este é um projeto de exemplo de uma aplicação Spring Boot 3.3 que simula o funcionamento de uma locadora de veículos. A aplicação fornece uma API RESTful para gerenciar veículos, clientes e reservas.
-
-## Tecnologias Utilizadas
-
-- **Java 17**
 - **Spring Boot 3.3**
 - **Spring Data JPA**
 - **H2 Database** (Banco de dados em memória para testes)
