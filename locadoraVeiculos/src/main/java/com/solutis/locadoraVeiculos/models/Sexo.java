@@ -1,4 +1,4 @@
-package com.solutis.locadoraVeiculos.model;
+package com.solutis.locadoraVeiculos.models;
 
 public enum Sexo {
     MASCULINO,
