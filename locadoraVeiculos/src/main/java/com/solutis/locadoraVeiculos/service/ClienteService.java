@@ -6,7 +6,7 @@ import com.solutis.locadoraVeiculos.exception.DuplicateEmailException;
 import com.solutis.locadoraVeiculos.exception.InvalidDataException;
 import com.solutis.locadoraVeiculos.mapper.DozerMapper;
 import com.solutis.locadoraVeiculos.model.Cliente;
-import com.solutis.locadoraVeiculos.repository.ClienteRepository;
+import com.solutis.locadoraVeiculos.repository.MotoristaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +16,10 @@ import java.util.Optional;
 public class ClienteService {
 
     @Autowired
-    private ClienteRepository clienteRepository;
+    private MotoristaRepository motoristaRepository;
 
     public ClienteDTO create(ClienteDTO clienteDTO) {
-        clienteRepository.findByEmail(clienteDTO.getEmail())
+        motoristaRepository.findByEmail(clienteDTO.getEmail())
                 .ifPresent(cliente -> {
                     throw new DuplicateEmailException("Email já cadastrado");
                 });
@@ -29,40 +29,40 @@ public class ClienteService {
         }
 
         Cliente cliente = DozerMapper.parseObject(clienteDTO, Cliente.class);
-        Cliente savedCliente = clienteRepository.save(cliente);
+        Cliente savedCliente = motoristaRepository.save(cliente);
         return DozerMapper.parseObject(savedCliente, ClienteDTO.class);
     }
 
 
     public ClienteDTO update(Long id, ClienteDTO clienteDTO) {
-        Cliente existingCliente = clienteRepository.findById(id)
+        Cliente existingCliente = motoristaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
 
         DozerMapper.updateObject(clienteDTO, existingCliente);
 
-        Cliente updatedCliente = clienteRepository.save(existingCliente);
+        Cliente updatedCliente = motoristaRepository.save(existingCliente);
         return DozerMapper.parseObject(updatedCliente, ClienteDTO.class);
     }
 
     public boolean delete(Long id) {
-        Cliente cliente = clienteRepository.findById(id)
+        Cliente cliente = motoristaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com o ID: " + id));
-        clienteRepository.delete(cliente);
+        motoristaRepository.delete(cliente);
         return true;
     }
 
     public Optional<ClienteDTO> findById(Long id) {
-        return clienteRepository.findById(id)
+        return motoristaRepository.findById(id)
                 .map(cliente -> DozerMapper.parseObject(cliente, ClienteDTO.class));
     }
 
     public Optional<ClienteDTO> findByCpf(String cpf) {
-        return clienteRepository.findByCpf(cpf)
+        return motoristaRepository.findByCpf(cpf)
                 .map(cliente -> DozerMapper.parseObject(cliente, ClienteDTO.class));
     }
 
     public Optional<ClienteDTO> findByEmail(String email) {
-        return clienteRepository.findByEmail(email)
+        return motoristaRepository.findByEmail(email)
                 .map(cliente -> DozerMapper.parseObject(cliente, ClienteDTO.class));
     }
 }

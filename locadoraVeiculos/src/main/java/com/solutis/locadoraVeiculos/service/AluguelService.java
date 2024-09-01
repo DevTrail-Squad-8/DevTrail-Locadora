@@ -9,7 +9,7 @@ import com.solutis.locadoraVeiculos.model.Cliente;
 import com.solutis.locadoraVeiculos.model.StatusAluguel;
 import com.solutis.locadoraVeiculos.repository.AluguelRepository;
 import com.solutis.locadoraVeiculos.repository.CarroRepository;
-import com.solutis.locadoraVeiculos.repository.ClienteRepository;
+import com.solutis.locadoraVeiculos.repository.MotoristaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -24,7 +24,7 @@ public class AluguelService {
     private CarroRepository carroRepository;
 
     @Autowired
-    private ClienteRepository clienteRepository;
+    private MotoristaRepository motoristaRepository;
 
     public AluguelDTO efetivarAluguel(Long aluguelId) {
         Aluguel aluguel = aluguelRepository.findById(aluguelId)
@@ -38,7 +38,7 @@ public class AluguelService {
         Carro carro = carroRepository.findById(carroId)
                 .orElseThrow(() -> new ResourceNotFoundException("Carro não encontrado com ID: " + carroId));
 
-        Cliente cliente = clienteRepository.findById(clienteId)
+        Cliente cliente = motoristaRepository.findById(clienteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com ID: " + clienteId));
 
         Aluguel aluguel = new Aluguel();
