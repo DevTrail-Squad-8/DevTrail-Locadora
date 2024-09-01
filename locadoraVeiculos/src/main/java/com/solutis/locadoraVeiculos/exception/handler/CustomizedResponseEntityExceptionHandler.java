@@ -3,7 +3,7 @@ package com.solutis.locadoraVeiculos.exception.handler;
 import com.solutis.locadoraVeiculos.exception.ResourceNotFoundException;
 import com.solutis.locadoraVeiculos.exception.DuplicateEmailException;
 import com.solutis.locadoraVeiculos.exception.ExceptionResponse;
-import com.solutis.locadoraVeiculos.exception.InvalidDataException;
+import com.solutis.locadoraVeiculos.exception.RequiredObjectIsNullException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -47,9 +47,9 @@ public class CustomizedResponseEntityExceptionHandler {
         return new ResponseEntity<>(exceptionResponse, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(InvalidDataException.class)
+    @ExceptionHandler(RequiredObjectIsNullException.class)
     public final ResponseEntity<ExceptionResponse> handleInvalidDataExceptions(
-            InvalidDataException ex, WebRequest request) {
+            RequiredObjectIsNullException ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(
                 new Date(),
                 ex.getMessage(),

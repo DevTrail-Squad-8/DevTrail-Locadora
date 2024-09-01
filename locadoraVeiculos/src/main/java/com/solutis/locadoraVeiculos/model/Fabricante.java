@@ -1,4 +1,4 @@
-package com.solutis.locadoraVeiculos.models;
+package com.solutis.locadoraVeiculos.model;
 
 import java.util.List;
 
@@ -8,7 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
-import java.util.List;
 @Entity
 @Data
 public class Fabricante {

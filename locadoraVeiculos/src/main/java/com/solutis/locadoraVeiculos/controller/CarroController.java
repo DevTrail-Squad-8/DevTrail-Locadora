@@ -1,117 +1,108 @@
 package com.solutis.locadoraVeiculos.controller;
 
-import com.solutis.locadoraVeiculos.dto.CarroDTO;
-import com.solutis.locadoraVeiculos.exception.ResourceNotFoundException;
-import com.solutis.locadoraVeiculos.mapper.DozerMapper;
-import com.solutis.locadoraVeiculos.model.Acessorio;
-import com.solutis.locadoraVeiculos.model.Carro;
-import com.solutis.locadoraVeiculos.model.ModeloCarro;
-import com.solutis.locadoraVeiculos.service.AcessorioService;
+import com.solutis.locadoraVeiculos.dtos.carroDtos.CarroDto;
+import com.solutis.locadoraVeiculos.dtos.carroDtos.LerCarroDto;
 import com.solutis.locadoraVeiculos.service.CarroService;
-import com.solutis.locadoraVeiculos.service.ModeloCarroService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/carro")
+@RequestMapping("/api/carros")
+@Tag(name = "Carro", description = "Endpoints para Gerenciamento de Carros")
 public class CarroController {
 
     @Autowired
     private CarroService carroService;
 
-    @Autowired
-    private ModeloCarroService modeloCarroService;
-
-    @Autowired
-    private AcessorioService acessorioService;
-
-    @GetMapping
-    public List<CarroDTO> getAllCarros() {
-        List<Carro> carros = carroService.getAllCarros();
-        return DozerMapper.parseListObjects(carros, CarroDTO.class);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<CarroDTO> getCarroById(@PathVariable Long id) {
-        Carro carro = carroService.getCarroById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Carro não encontrado com ID: " + id));
-        CarroDTO carroDto = DozerMapper.parseObject(carro, CarroDTO.class);
-        return ResponseEntity.ok(carroDto);
-    }
-
-    @PostMapping
-    public ResponseEntity<CarroDTO> createCarro(@RequestBody CarroDTO carroDto) {
-        Carro carro = DozerMapper.parseObject(carroDto, Carro.class);
-
-        if (carro.getModeloCarro() != null && carro.getModeloCarro().getId() != null) {
-            ModeloCarro modeloCarro = modeloCarroService.getModeloCarroById(carro.getModeloCarro().getId())
-                    .orElseThrow(() -> new ResourceNotFoundException("ModeloCarro não encontrado com ID: " + carro.getModeloCarro().getId()));
-            carro.setModeloCarro(modeloCarro);
-        }
-
-        if (carro.getAcessorios() != null) {
-            List<Acessorio> acessorios = new ArrayList<>();
-            for (Acessorio acessorio : carro.getAcessorios()) {
-                if (acessorio.getId() != null) {
-                    Optional<Acessorio> acessorioOpt = acessorioService.getAcessorioById(acessorio.getId());
-                    if (acessorioOpt.isPresent()) {
-                        acessorios.add(acessorioOpt.get());
-                    } else {
-                        throw new ResourceNotFoundException("Acessorio não encontrado com ID: " + acessorio.getId());
-                    }
-                } else {
-                    Acessorio savedAcessorio = acessorioService.saveAcessorio(acessorio);
-                    acessorios.add(savedAcessorio);
-                }
+    @PostMapping(
+            consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @Operation(summary = "Adicionar um nov Carro",
+            description = "Adiciona um novo carro passando uma representação JSON ou XML do carro!",
+            tags = {"Carro"},
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200",
+                            content = @Content(schema = @Schema(implementation = CarroDto.class))
+                    ),
+                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+                    @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
             }
-            carro.setAcessorios(acessorios);
-        }
-
-        Carro savedCarro = carroService.saveCarro(carro);
-        CarroDTO savedCarroDto = DozerMapper.parseObject(savedCarro, CarroDTO.class);
-        return ResponseEntity.ok(savedCarroDto);
+    )
+    public ResponseEntity<LerCarroDto> cadastrarCarro (@RequestBody CarroDto carroDTO){
+        var carroCriado = carroService.criarCarro(carroDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(carroCriado);
     }
 
-
-    @PutMapping("/{id}")
-    public ResponseEntity<CarroDTO> updateCarro(@PathVariable Long id, @RequestBody CarroDTO carroDetails) {
-        Carro carro = carroService.getCarroById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Carro não encontrado com ID: " + id));
-
-        Long modeloCarroId = carroDetails.getModeloCarro().getId();
-        if (modeloCarroId != null) {
-            Optional<ModeloCarro> modeloCarroOpt = modeloCarroService.getModeloCarroById(modeloCarroId);
-            if (modeloCarroOpt.isPresent()) {
-                carro.setModeloCarro(modeloCarroOpt.get());
-            } else {
-                throw new ResourceNotFoundException("ModeloCarro não encontrado com ID: " + modeloCarroId);
+    @GetMapping(
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @Operation(summary = "Encontrar todos os carros", description = "Encontrar todos os carros",
+            tags = {"Carro"},
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            array = @ArraySchema(schema = @Schema(implementation = LerCarroDto.class))
+                                    )
+                            }),
+                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+                    @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
             }
-        }
-
-        DozerMapper.updateObject(carroDetails, carro);
-
-        Carro updatedCarro = carroService.saveCarro(carro);
-        CarroDTO updatedCarroDto = DozerMapper.parseObject(updatedCarro, CarroDTO.class);
-        return ResponseEntity.ok(updatedCarroDto);
+    )
+    public ResponseEntity<List<LerCarroDto>> retornarCarros (){
+        var listaDeCarros = carroService.retornarTodosOsCarros();
+        return ResponseEntity.status(HttpStatus.OK).body(listaDeCarros);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCarro(@PathVariable Long id) {
-        carroService.deleteCarro(id);
-        return ResponseEntity.noContent().build();
+    @GetMapping(value = "/{id}",
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @Operation(summary = "Encontrar um Carro", description = "Encontrar um Carro",
+            tags = {"Carro"},
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200",
+                            content = @Content(schema = @Schema(implementation = LerCarroDto.class))
+                    ),
+                    @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
+                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+                    @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
+            }
+    )
+    public ResponseEntity<LerCarroDto> retornarCarroPorId (@PathVariable(value = "id") Long id){
+        var carroRetornado = carroService.retornarCarroPorId(id);
+        return ResponseEntity.status(HttpStatus.OK).body(carroRetornado);
+
     }
 
-    @GetMapping("/disponiveis")
-    public ResponseEntity<List<CarroDTO>> listarVeiculosDisponiveis(
-            @RequestParam(required = false) String categoria,
-            @RequestParam(required = false) List<String> acessorios) {
-
-        List<CarroDTO> veiculos = carroService.listarVeiculosDisponiveis(categoria, acessorios);
-        return ResponseEntity.ok(veiculos);
+    @DeleteMapping(value = "/{id}")
+    @Operation(summary = "Deletar um carro",
+            description = "Deleta um carro passando uma representação JSON ou XML do carro!",
+            tags = {"Carro"},
+            responses = {
+                    @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
+                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+                    @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
+            }
+    )
+    public ResponseEntity<?> deletarCarroPorId (@PathVariable(value = "id") Long id){
+        carroService.deletarCarro(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

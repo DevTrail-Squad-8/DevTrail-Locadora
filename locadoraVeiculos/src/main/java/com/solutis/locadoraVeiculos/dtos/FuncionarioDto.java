@@ -1,5 +1,10 @@
 package com.solutis.locadoraVeiculos.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.solutis.locadoraVeiculos.model.Sexo;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+
 import java.time.LocalDate;
 
 @Data

@@ -1,6 +1,9 @@
-package com.solutis.locadoraVeiculos.models;
+package com.solutis.locadoraVeiculos.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
 import java.time.LocalDate;
 
 @Entity

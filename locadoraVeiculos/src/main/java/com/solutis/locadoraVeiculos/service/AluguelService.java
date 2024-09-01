@@ -1,18 +1,22 @@
 package com.solutis.locadoraVeiculos.service;
 
-import com.solutis.locadoraVeiculos.dto.AluguelDTO;
+import com.solutis.locadoraVeiculos.dtos.aluguelDtos.CriarAluguelDto;
+import com.solutis.locadoraVeiculos.dtos.aluguelDtos.LerAluguelDto;
 import com.solutis.locadoraVeiculos.exception.ResourceNotFoundException;
-import com.solutis.locadoraVeiculos.mapper.DozerMapper;
 import com.solutis.locadoraVeiculos.model.Aluguel;
 import com.solutis.locadoraVeiculos.model.Carro;
-import com.solutis.locadoraVeiculos.model.Cliente;
-import com.solutis.locadoraVeiculos.model.StatusAluguel;
 import com.solutis.locadoraVeiculos.repository.AluguelRepository;
+import com.solutis.locadoraVeiculos.repository.ApoliceSeguroRepository;
 import com.solutis.locadoraVeiculos.repository.CarroRepository;
 import com.solutis.locadoraVeiculos.repository.MotoristaRepository;
+import com.solutis.locadoraVeiculos.mapper.DozerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class AluguelService {
@@ -21,39 +25,68 @@ public class AluguelService {
     private AluguelRepository aluguelRepository;
 
     @Autowired
+    private MotoristaRepository motoristaRepository;
+
+    @Autowired
     private CarroRepository carroRepository;
 
     @Autowired
-    private MotoristaRepository motoristaRepository;
+    private ApoliceSeguroRepository apoliceSeguroRepository;
 
-    public AluguelDTO efetivarAluguel(Long aluguelId) {
-        Aluguel aluguel = aluguelRepository.findById(aluguelId)
-                .orElseThrow(() -> new ResourceNotFoundException("Aluguel não encontrado com ID: " + aluguelId));
-        aluguel.setStatus(StatusAluguel.CONFIRMADO);
-        aluguel.setDataPedido(LocalDateTime.now());
-        Aluguel savedAluguel = aluguelRepository.save(aluguel);
-        return DozerMapper.parseObject(savedAluguel, AluguelDTO.class);
+    private Logger logger = Logger.getLogger(AluguelService.class.getName());
+
+    public LerAluguelDto criarAluguel(CriarAluguelDto criarAluguelDTO) {
+
+        Aluguel aluguelCriado = DozerMapper.parseObject(criarAluguelDTO, Aluguel.class);
+        aluguelCriado.setDataPedido(LocalDate.now());
+
+        aluguelCriado.setMotorista(motoristaRepository.findById(criarAluguelDTO.getMotorista_id())
+                .orElseThrow(ResourceNotFoundException::new));
+
+        aluguelCriado.setApoliceSeguro(apoliceSeguroRepository.findById(criarAluguelDTO.getApolicesSeguro_id())
+                .orElseThrow(ResourceNotFoundException::new));
+
+        List<Carro> listaCarro = criarAluguelDTO
+                .getCarros_id()
+                .stream()
+                .map(idCarro -> {
+                    var carro = carroRepository.findById(idCarro)
+                            .orElseThrow(ResourceNotFoundException::new);
+                    return carro;
+                }).collect(Collectors.toList());
+        aluguelCriado.setCarros(listaCarro);
+
+        aluguelCriado = aluguelRepository.save(aluguelCriado);
+
+        LerAluguelDto lerAluguelDto = DozerMapper.parseObject(aluguelCriado, LerAluguelDto.class);
+        return lerAluguelDto;
     }
-    public AluguelDTO adicionarVeiculoAoCarrinho(Long carroId, Long clienteId, LocalDateTime dataEntrega, LocalDateTime dataDevolucao) {
-        Carro carro = carroRepository.findById(carroId)
-                .orElseThrow(() -> new ResourceNotFoundException("Carro não encontrado com ID: " + carroId));
 
-        Cliente cliente = motoristaRepository.findById(clienteId)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com ID: " + clienteId));
+    public LerAluguelDto retornarAlugueisById(Long id) {
 
-        Aluguel aluguel = new Aluguel();
-        aluguel.setCarro(carro);
-        aluguel.setCliente(cliente);
-        aluguel.setDataEntrega(dataEntrega);
-        aluguel.setDataDevolucao(dataDevolucao);
-        aluguel.calcularValorTotal(carro.getValorDiaria());
-        aluguel.setStatus(StatusAluguel.RESERVADO);
-        Aluguel savedAluguel = aluguelRepository.save(aluguel);
-        return DozerMapper.parseObject(savedAluguel, AluguelDTO.class);
-    }
-    public AluguelDTO getAluguelById(Long id) {
+        logger.info("Finding one rent!");
+
         Aluguel aluguel = aluguelRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Aluguel não encontrado com ID: " + id));
-        return DozerMapper.parseObject(aluguel, AluguelDTO.class);
+                .orElseThrow(() -> new ResourceNotFoundException("Nenhum registro encontrado para este ID!"));
+
+        LerAluguelDto lerAluguelDto = DozerMapper.parseObject(aluguel, LerAluguelDto.class);
+        return lerAluguelDto;
+    }
+
+    public List<LerAluguelDto> retornarTodosAlugueis() {
+
+        logger.info("Finding all rents!");
+
+        List<Aluguel> listaAluguel = aluguelRepository.findAll();
+        return DozerMapper.parseListObjects(listaAluguel, LerAluguelDto.class);
+    }
+
+    public void deletarAluguel(Long id) {
+
+        logger.info("Deleting one rent!");
+
+        var entity = aluguelRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Nenhum registro encontrado para este ID!"));
+        aluguelRepository.delete(entity);
     }
 }

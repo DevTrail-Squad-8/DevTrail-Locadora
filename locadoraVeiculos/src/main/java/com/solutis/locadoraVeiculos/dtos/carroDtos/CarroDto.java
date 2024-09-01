@@ -1,7 +1,6 @@
 package com.solutis.locadoraVeiculos.dtos.carroDtos;
 
-import com.solutis.locadoraVeiculos.dtos.acessorioDto.AcessorioDTO;
-import com.solutis.locadoraVeiculos.models.Categoria;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.List;

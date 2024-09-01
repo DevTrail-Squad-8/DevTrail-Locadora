@@ -1,4 +1,4 @@
-package com.solutis.locadoraVeiculos.models;
+package com.solutis.locadoraVeiculos.model;
 
 public enum Categoria {
     HATCH_COMPACTO,
