@@ -28,11 +28,11 @@ public class CarroController {
     @PostMapping(
             consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    @Operation(summary = "Adicionar um nov Carro",
+    @Operation(summary = "Adicionar um novo Carro",
             description = "Adiciona um novo carro passando uma representação JSON ou XML do carro!",
             tags = {"Carro"},
             responses = {
-                    @ApiResponse(description = "Success", responseCode = "200",
+                    @ApiResponse(description = "Success", responseCode = "201",
                             content = @Content(schema = @Schema(implementation = CarroDto.class))
                     ),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
@@ -40,7 +40,7 @@ public class CarroController {
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
             }
     )
-    public ResponseEntity<LerCarroDto> cadastrarCarro (@RequestBody CarroDto carroDTO){
+    public ResponseEntity<LerCarroDto> cadastrarCarro(@RequestBody CarroDto carroDTO) {
         var carroCriado = carroService.criarCarro(carroDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(carroCriado);
     }
@@ -63,7 +63,7 @@ public class CarroController {
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
             }
     )
-    public ResponseEntity<List<LerCarroDto>> retornarCarros (){
+    public ResponseEntity<List<LerCarroDto>> retornarCarros() {
         var listaDeCarros = carroService.retornarTodosOsCarros();
         return ResponseEntity.status(HttpStatus.OK).body(listaDeCarros);
     }
@@ -83,10 +83,9 @@ public class CarroController {
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
             }
     )
-    public ResponseEntity<LerCarroDto> retornarCarroPorId (@PathVariable(value = "id") Long id){
+    public ResponseEntity<LerCarroDto> retornarCarroPorId(@PathVariable(value = "id") Long id) {
         var carroRetornado = carroService.retornarCarroPorId(id);
         return ResponseEntity.status(HttpStatus.OK).body(carroRetornado);
-
     }
 
     @DeleteMapping(value = "/{id}")
@@ -101,7 +100,7 @@ public class CarroController {
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
             }
     )
-    public ResponseEntity<?> deletarCarroPorId (@PathVariable(value = "id") Long id){
+    public ResponseEntity<?> deletarCarroPorId(@PathVariable(value = "id") Long id) {
         carroService.deletarCarro(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

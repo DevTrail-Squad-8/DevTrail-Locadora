@@ -18,18 +18,25 @@ public class Carro {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @Column
     @NotBlank
     private String placa;
+
     @Column
     @NotBlank
     private String chassi;
+
     @Column
     @NotBlank
     private String cor;
+
     @Column
     @NotNull
     private BigDecimal valorDiaria;
+
+    @Column
+    private String imagem;
 
     @ManyToOne
     @JoinColumn(name = "aluguel_id")

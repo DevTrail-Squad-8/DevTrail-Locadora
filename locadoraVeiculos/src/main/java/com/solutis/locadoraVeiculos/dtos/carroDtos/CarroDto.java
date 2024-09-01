@@ -19,5 +19,6 @@ public class CarroDto {
     private List<Long> acessorios_id;
 
     private Long modeloCarro_id;
-}
 
+    private String imagem;
+}
