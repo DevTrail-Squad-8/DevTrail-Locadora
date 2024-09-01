@@ -1,8 +1,5 @@
 package com.solutis.locadoraVeiculos.controller;
 
-import com.solutis.locadoraVeiculos.dtos.carroDtos.CarroDto;
-import com.solutis.locadoraVeiculos.dtos.carroDtos.LerCarroDto;
-import com.solutis.locadoraVeiculos.service.CarroService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,49 +10,87 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import com.solutis.locadoraVeiculos.dtos.FuncionarioDto;
+import com.solutis.locadoraVeiculos.dtos.MotoristaDto;
+import com.solutis.locadoraVeiculos.service.FuncionarioService;
 
 import java.util.List;
 
-@Controller
-@RequestMapping("/api/carros")
-@Tag(name = "Carro", description = "Endpoints para Gerenciamento de Carros")
-public class CarroController {
+@RestController
+@RequestMapping("/api/funcionarios")
+@Tag(name = "Funcionário", description = "Endpoints para Gerenciamento de Funcionários")
+public class FuncionarioController {
 
     @Autowired
-    private CarroService carroService;
+    private FuncionarioService funcionarioService;
 
     @PostMapping(
             consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    @Operation(summary = "Adicionar um nov Carro",
-            description = "Adiciona um novo carro passando uma representação JSON ou XML do carro!",
-            tags = {"Carro"},
+    @Operation(summary = "Adicionando um novo funcionário",
+            description = "Adiciona um novo funcionário passando uma representação JSON ou XML !",
+            tags = {"Funcionário"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",
-                            content = @Content(schema = @Schema(implementation = CarroDto.class))
+                            content = @Content(schema = @Schema(implementation = FuncionarioDto.class))
                     ),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
             }
     )
-    public ResponseEntity<LerCarroDto> cadastrarCarro (@RequestBody CarroDto carroDTO){
-        var carroCriado = carroService.criarCarro(carroDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(carroCriado);
+    public ResponseEntity<FuncionarioDto> cadastrarFuncionario(@RequestBody FuncionarioDto funcionario){
+        var funcionarioCadastrado = funcionarioService.cadastrarFuncionario(funcionario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(funcionarioCadastrado);
     }
 
+
+    @Operation(summary = "Procura um funcionário por ID", description = "Procura um funcionário por ID",
+            tags = {"Funcionário"},
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200",
+                            content = @Content(schema = @Schema(implementation = MotoristaDto.class))
+                    ),
+                    @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
+                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+                    @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
+            }
+    )
+    @GetMapping(value = "/{id}",
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public FuncionarioDto findById (@PathVariable(value = "id") Long id) {
+        return funcionarioService.findById(id);
+    }
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Deleta um Funcionário",
+            description = "Deleta um funcionário passando uma representação JSON ou XML!!",
+            tags = {"Funcionário"},
+            responses = {
+                    @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
+                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+                    @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
+            }
+    )
+    public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
+        funcionarioService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
     @GetMapping(
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    @Operation(summary = "Encontrar todos os carros", description = "Encontrar todos os carros",
-            tags = {"Carro"},
+    @Operation(summary = "Procurando todos os funcionários", description = "Procurando todos os funcionários",
+            tags = {"Funcionário"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            array = @ArraySchema(schema = @Schema(implementation = LerCarroDto.class))
+                                            array = @ArraySchema(schema = @Schema(implementation = MotoristaDto.class))
                                     )
                             }),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
@@ -64,46 +99,9 @@ public class CarroController {
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
             }
     )
-    public ResponseEntity<List<LerCarroDto>> retornarCarros (){
-        var listaDeCarros = carroService.retornarTodosOsCarros();
-        return ResponseEntity.status(HttpStatus.OK).body(listaDeCarros);
+    public ResponseEntity<List<FuncionarioDto>> findAll() {
+        List<FuncionarioDto> listaFuncionarioDto = funcionarioService.findAll();
+        return ResponseEntity.ok(listaFuncionarioDto);
     }
 
-    @GetMapping(value = "/{id}",
-            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    @Operation(summary = "Encontrar um Carro", description = "Encontrar um Carro",
-            tags = {"Carro"},
-            responses = {
-                    @ApiResponse(description = "Success", responseCode = "200",
-                            content = @Content(schema = @Schema(implementation = LerCarroDto.class))
-                    ),
-                    @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
-                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
-                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
-                    @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
-                    @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
-            }
-    )
-    public ResponseEntity<LerCarroDto> retornarCarroPorId (@PathVariable(value = "id") Long id){
-        var carroRetornado = carroService.retornarCarroPorId(id);
-        return ResponseEntity.status(HttpStatus.OK).body(carroRetornado);
-
-    }
-
-    @DeleteMapping(value = "/{id}")
-    @Operation(summary = "Deletar um carro",
-            description = "Deleta um carro passando uma representação JSON ou XML do carro!",
-            tags = {"Carro"},
-            responses = {
-                    @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
-                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
-                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
-                    @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
-                    @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
-            }
-    )
-    public ResponseEntity<?> deletarCarroPorId (@PathVariable(value = "id") Long id){
-        carroService.deletarCarro(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
 }
