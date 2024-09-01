@@ -78,4 +78,15 @@ public class CarroService {
     private Carro retornarCarroDoBancoPorId(long id){
         return carroRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
+
+    public Carro adicionarAcessorio(long idCarro, long idAcessorio) {
+        var carro = retornarCarroDoBancoPorId(idCarro);
+        var acessorio = acessorioRepository.findById(idAcessorio);
+        if (acessorio.isEmpty()) {
+            throw new ResourceNotFoundException();
+        }
+        carro.getAcessorios()
+            .add(acessorio.get());
+        return carroRepository.save(carro);
+    }
 }

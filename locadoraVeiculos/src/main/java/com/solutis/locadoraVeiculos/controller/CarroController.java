@@ -106,4 +106,30 @@ public class CarroController {
         carroService.deletarCarro(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    public static class AdicionarAcessorioDTO {
+      public long idAcessorio;
+      public long idCarro;
+    }
+
+  @PostMapping(
+      consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
+      produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
+      value = "/acessorio")
+  @Operation(summary = "Adicionar um nov Carro",
+      description = "Adiciona um novo carro passando uma representação JSON ou XML do carro!",
+      tags = {"Carro"},
+      responses = {
+          @ApiResponse(description = "Success", responseCode = "200",
+              content = @Content(schema = @Schema(implementation = CarroDto.class))
+          ),
+          @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+          @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+          @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
+      }
+  )
+  public ResponseEntity<LerCarroDto> adicionarAcessorio (@RequestBody AdicionarAcessorioDTO dto){
+      var carro = carroService.adicionarAcessorio(dto.idCarro, dto.idAcessorio);
+      return ResponseEntity.status(HttpStatus.CREATED).body(new LerCarroDto(carro));
+  }
 }

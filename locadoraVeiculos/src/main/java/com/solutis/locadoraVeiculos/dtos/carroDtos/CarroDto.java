@@ -1,11 +1,18 @@
 package com.solutis.locadoraVeiculos.dtos.carroDtos;
 
+import com.solutis.locadoraVeiculos.model.Carro;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class CarroDto {
 
     private String placa;
@@ -21,4 +28,5 @@ public class CarroDto {
     private Long modeloCarro_id;
 
     private String imagem;
+
 }
