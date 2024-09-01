@@ -2,6 +2,11 @@ package com.solutis.locadoraVeiculos.dtos.fabricantesDto;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import lombok.Data;
+
 @Data
 public class FabricanteDto {
 

@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.solutis.locadoraVeiculos.mapper.DozerMapper;
 
 import java.util.List;
 
@@ -22,8 +23,7 @@ public class MotoristaService {
     @Autowired
     private MotoristaRepository repository;
 
-    @Autowired
-    private DozerMapper dozerMapper;
+  
 
     public MotoristaDto create(MotoristaDto motoristaDto) {
 
@@ -34,10 +34,10 @@ public class MotoristaService {
         if (emailExists(motoristaDto.getEmail()))
             throw new DuplicateEmailException("Erro! Email já registrado.");
 
-        Motorista motorista = dozerMapper.parseObject(motoristaDto, Motorista.class);
+        Motorista motorista = DozerMapper.parseObject(motoristaDto, Motorista.class);
         motorista = repository.save(motorista);
 
-        return dozerMapper.parseObject(motorista, MotoristaDto.class);
+        return DozerMapper.parseObject(motorista, MotoristaDto.class);
     }
 
     public MotoristaDto findById(Long id) {
@@ -47,7 +47,7 @@ public class MotoristaService {
         Motorista motorista = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Nenhum registro encontrado para este ID!"));
 
-        return dozerMapper.parseObject(motorista, MotoristaDto.class);
+        return DozerMapper.parseObject(motorista, MotoristaDto.class);
     }
 
     public List<MotoristaDto> findAll() {
@@ -55,7 +55,7 @@ public class MotoristaService {
         logger.info("Buscando todos os motoristas!");
 
         List<Motorista> listaMotorista = repository.findAll();
-        return dozerMapper.parseListObjects(listaMotorista, MotoristaDto.class);
+        return DozerMapper.parseListObjects(listaMotorista, MotoristaDto.class);
     }
 
     public MotoristaDto update(MotoristaDto motoristaDto) {
@@ -70,7 +70,7 @@ public class MotoristaService {
         if (!entity.getEmail().equals(motoristaDto.getEmail()) && emailExists(motoristaDto.getEmail()))
             throw new DuplicateEmailException("Erro! Email já registrado.");
 
-        dozerMapper.updateObject(motoristaDto, entity);
+            DozerMapper.updateObject(motoristaDto, entity);
         repository.save(entity);
 
         return motoristaDto;

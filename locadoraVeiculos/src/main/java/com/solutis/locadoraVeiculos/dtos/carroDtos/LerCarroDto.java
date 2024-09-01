@@ -3,7 +3,13 @@ package com.solutis.locadoraVeiculos.dtos.carroDtos;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.solutis.locadoraVeiculos.dtos.aluguelDtos.AluguelDTO;
+import io.swagger.v3.oas.annotations.media.Schema;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.solutis.locadoraVeiculos.model.Acessorio;
+import com.solutis.locadoraVeiculos.model.ModeloCarro;
+
+import lombok.Data;
+
 
 @Data
 public class LerCarroDto {
