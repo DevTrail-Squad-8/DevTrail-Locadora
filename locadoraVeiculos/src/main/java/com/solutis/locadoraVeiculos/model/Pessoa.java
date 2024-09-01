@@ -1,32 +1,38 @@
 package com.solutis.locadoraVeiculos.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-@Data
+import java.time.LocalDate;
+
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@Data
 public abstract class Pessoa {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column
+    @NotNull
     private String nome;
 
-    @Temporal(TemporalType.DATE)
-    private Data dataNascimento;
+    @Column
+    @NotNull
+    private LocalDate dataDeNascimento;
 
+    @Column
+    @NotNull
     private String cpf;
 
+    @Column(unique = true)
+    @NotNull
+    private String email;
+
+    @Column
     @Enumerated(EnumType.STRING)
     private Sexo sexo;
-
 
 }
