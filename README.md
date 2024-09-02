@@ -39,8 +39,10 @@ Este é um projeto de exemplo de uma aplicação Spring Boot 3.3 que simula o fu
 
    Acesse o banco de dados H2 em [http://localhost:8080/database](http://localhost:8080/database).# Locadora de Veículos
 
+
 ## Diagrama de Classes
 ![Main](https://github.com/user-attachments/assets/4a3d38b1-5611-45fd-8fda-548c6ba71fd3)
+
 
 
 
