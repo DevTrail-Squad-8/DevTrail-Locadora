@@ -3,10 +3,9 @@ package com.solutis.locadoraVeiculos.service;
 import com.solutis.locadoraVeiculos.dtos.acessorioDto.AcessorioDto;
 import com.solutis.locadoraVeiculos.dtos.acessorioDto.LerAcessorioDto;
 import com.solutis.locadoraVeiculos.exception.ResourceNotFoundException;
+import com.solutis.locadoraVeiculos.mapper.DozerMapper;
 import com.solutis.locadoraVeiculos.model.Acessorio;
 import com.solutis.locadoraVeiculos.repository.AcessorioRepository;
-
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,23 +18,14 @@ public class AcessorioService {
     private AcessorioRepository acessorioRepository;
 
     public AcessorioDto criarAcessorio(AcessorioDto acessorioDto) {
-        var acessorio = new Acessorio();
-        BeanUtils.copyProperties(acessorioDto, acessorio);
+        var acessorio = DozerMapper.parseObject(acessorioDto, Acessorio.class);
         var acessorioCriado = acessorioRepository.save(acessorio);
-        BeanUtils.copyProperties(acessorioCriado,acessorioDto);
-        return acessorioDto;
+        return DozerMapper.parseObject(acessorioCriado, AcessorioDto.class);
     }
 
     public List<LerAcessorioDto> retornarTodos() {
         var acessoriosRetornados = acessorioRepository.findAll();
-        var acessoriosDtos = acessoriosRetornados
-                .stream()
-                .map(acessorio ->{
-                    var acessorioDto = new LerAcessorioDto();
-                    BeanUtils.copyProperties(acessorio,acessorioDto);
-                    return acessorioDto;})
-                .toList();
-        return acessoriosDtos;
+        return DozerMapper.parseListObjects(acessoriosRetornados, LerAcessorioDto.class);
     }
 
     public void deletarPorId(Long id) {
@@ -43,12 +33,9 @@ public class AcessorioService {
         acessorioRepository.delete(acessorio);
     }
 
-
     public LerAcessorioDto retornaPorId(Long id) {
-            var acessorio = recuperarAcessorioDoBanco(id);
-            var acessorioDto = new LerAcessorioDto();
-            BeanUtils.copyProperties(acessorio,acessorioDto);
-            return acessorioDto;
+        var acessorio = recuperarAcessorioDoBanco(id);
+        return DozerMapper.parseObject(acessorio, LerAcessorioDto.class);
     }
 
     private Acessorio recuperarAcessorioDoBanco(Long id){

@@ -7,13 +7,12 @@ import com.solutis.locadoraVeiculos.exception.DuplicateEmailException;
 import com.solutis.locadoraVeiculos.mapper.DozerMapper;
 import com.solutis.locadoraVeiculos.model.Motorista;
 import com.solutis.locadoraVeiculos.repository.MotoristaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class MotoristaService {
@@ -32,28 +31,20 @@ public class MotoristaService {
         if (emailExists(motoristaDto.getEmail()))
             throw new DuplicateEmailException("Erro! Email já registrado.");
 
-        Motorista motorista = new Motorista();
-        BeanUtils.copyProperties(motoristaDto, motorista);
-
+        Motorista motorista = DozerMapper.parseObject(motoristaDto, Motorista.class);
         motorista = repository.save(motorista);
 
-        MotoristaDto motoristaCriado = new MotoristaDto();
-        BeanUtils.copyProperties(motorista, motoristaCriado);
-
-        return motoristaCriado;
+        return DozerMapper.parseObject(motorista, MotoristaDto.class);
     }
 
     public MotoristaDto findById(Long id) {
 
         logger.info("Buscando um motorista!");
 
-        Motorista motorista = repository.findById(id).
-                orElseThrow(() -> new ResourceNotFoundException("Nenhum registro encontrado para este ID!"));
+        Motorista motorista = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Nenhum registro encontrado para este ID!"));
 
-        MotoristaDto MotoristaDto = new MotoristaDto();
-        BeanUtils.copyProperties(motorista, MotoristaDto);
-
-        return MotoristaDto;
+        return DozerMapper.parseObject(motorista, MotoristaDto.class);
     }
 
     public List<MotoristaDto> findAll() {
@@ -62,11 +53,7 @@ public class MotoristaService {
 
         List<Motorista> listaMotorista = repository.findAll();
         return listaMotorista.stream()
-                .map(motorista -> {
-                    MotoristaDto motoristaDto = new MotoristaDto();
-                    BeanUtils.copyProperties(motorista, motoristaDto);
-                    return motoristaDto;
-                })
+                .map(motorista -> DozerMapper.parseObject(motorista, MotoristaDto.class))
                 .collect(Collectors.toList());
     }
 
@@ -82,7 +69,7 @@ public class MotoristaService {
         if (!entity.getEmail().equals(motoristaDto.getEmail()) && emailExists(motoristaDto.getEmail()))
             throw new DuplicateEmailException("Erro! Email já registrado.");
 
-        BeanUtils.copyProperties(motoristaDto, entity);
+        DozerMapper.updateObject(motoristaDto, entity);
 
         repository.save(entity);
 

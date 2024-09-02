@@ -4,13 +4,12 @@ import com.solutis.locadoraVeiculos.dtos.carroDtos.CarroDto;
 import com.solutis.locadoraVeiculos.dtos.carroDtos.LerCarroDto;
 import com.solutis.locadoraVeiculos.exception.RequiredObjectIsNullException;
 import com.solutis.locadoraVeiculos.exception.ResourceNotFoundException;
+import com.solutis.locadoraVeiculos.mapper.DozerMapper;
 import com.solutis.locadoraVeiculos.model.Acessorio;
 import com.solutis.locadoraVeiculos.model.Carro;
 import com.solutis.locadoraVeiculos.repository.AcessorioRepository;
 import com.solutis.locadoraVeiculos.repository.CarroRepository;
 import com.solutis.locadoraVeiculos.repository.ModeloCarroRepository;
-import com.solutis.locadoraVeiculos.mapper.DozerMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,64 +28,55 @@ public class CarroService {
     @Autowired
     private ModeloCarroRepository modeloCarroRepository;
 
-
     public LerCarroDto criarCarro(CarroDto carroDTO) {
-        if (carroDTO == null){throw new RequiredObjectIsNullException();}
-        var carroCriado = new Carro();
-        BeanUtils.copyProperties(carroDTO,carroCriado, "modeloCarro_id", "acessorios_id");
-        List<Acessorio> listaAcessorio = carroDTO
-                .getAcessorios_id()
-                .stream()
-                .map(idAcessorio -> {
-                    var acessorio = acessorioRepository.findById(idAcessorio)
-                            .orElseThrow(ResourceNotFoundException::new);
-                    return acessorio;
-        }).toList();
+        if (carroDTO == null) {
+            throw new RequiredObjectIsNullException();
+        }
+
+        Carro carroCriado = DozerMapper.parseObject(carroDTO, Carro.class);
+        carroCriado.setModeloCarro(
+                modeloCarroRepository.findById(carroDTO.getModeloCarro_id())
+                        .orElseThrow(ResourceNotFoundException::new)
+        );
+
+        List<Acessorio> listaAcessorio = carroDTO.getAcessorios_id().stream()
+                .map(idAcessorio -> acessorioRepository.findById(idAcessorio)
+                        .orElseThrow(ResourceNotFoundException::new))
+                .collect(Collectors.toList());
         carroCriado.setAcessorios(listaAcessorio);
 
-        carroCriado.setModeloCarro(modeloCarroRepository.findById(carroDTO.getModeloCarro_id())
-                .orElseThrow(ResourceNotFoundException::new));
-
-        LerCarroDto lerCarroDto = new LerCarroDto();
         carroCriado = carroRepository.save(carroCriado);
-        BeanUtils.copyProperties(carroCriado,lerCarroDto);
-        return lerCarroDto;
+        return DozerMapper.parseObject(carroCriado, LerCarroDto.class);
     }
 
-    public List<LerCarroDto> retornarTodosOsCarros(){
+    public List<LerCarroDto> retornarTodosOsCarros() {
         var carrosRecuperadosDoBanco = carroRepository.findAll();
-        var listaDeRetornoDto = carrosRecuperadosDoBanco
-                .stream()
-                .map(carro -> {
-                    var carroDto = new LerCarroDto();
-                    BeanUtils.copyProperties(carro,carroDto);
-                    return carroDto;
-                }).collect(Collectors.toList());
-        return listaDeRetornoDto;
+        return carrosRecuperadosDoBanco.stream()
+                .map(carro -> DozerMapper.parseObject(carro, LerCarroDto.class))
+                .collect(Collectors.toList());
     }
 
-    public LerCarroDto retornarCarroPorId(long id){
+    public LerCarroDto retornarCarroPorId(long id) {
         var carroRecuperadoDoBanco = retornarCarroDoBancoPorId(id);
-        var carroDto = new LerCarroDto();
-        BeanUtils.copyProperties(carroRecuperadoDoBanco, carroDto);
-        return carroDto;
+        return DozerMapper.parseObject(carroRecuperadoDoBanco, LerCarroDto.class);
     }
-    public void deletarCarro(long id){
+
+    public void deletarCarro(long id) {
         var carroRecuperadoDoBanco = retornarCarroDoBancoPorId(id);
         carroRepository.delete(carroRecuperadoDoBanco);
     }
-    private Carro retornarCarroDoBancoPorId(long id){
-        return carroRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+
+    private Carro retornarCarroDoBancoPorId(long id) {
+        return carroRepository.findById(id)
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     public Carro adicionarAcessorio(long idCarro, long idAcessorio) {
         var carro = retornarCarroDoBancoPorId(idCarro);
-        var acessorio = acessorioRepository.findById(idAcessorio);
-        if (acessorio.isEmpty()) {
-            throw new ResourceNotFoundException();
-        }
-        carro.getAcessorios()
-            .add(acessorio.get());
+        var acessorio = acessorioRepository.findById(idAcessorio)
+                .orElseThrow(ResourceNotFoundException::new);
+
+        carro.getAcessorios().add(acessorio);
         return carroRepository.save(carro);
     }
 }

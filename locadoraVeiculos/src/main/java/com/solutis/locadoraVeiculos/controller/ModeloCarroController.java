@@ -86,7 +86,7 @@ public class ModeloCarroController {
             }
     )
     public  ResponseEntity<LerModeloCarroDto> retornarModelosCarroPorId(@PathVariable(value = "id") Long id){
-        var modeloRetornado = modeloCarroService.retornarModeloCarroPorid(id);
+        var modeloRetornado = modeloCarroService.retornarModeloCarroPorId(id);
         return  ResponseEntity.status(HttpStatus.CREATED).body(modeloRetornado);
     }
 
