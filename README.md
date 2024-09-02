@@ -103,4 +103,17 @@ http://localhost:8080/api/motoristas
 ```
 
 
+## COMPONENTES
+[<img src="https://avatars.githubusercontent.com/u/81264511?v=4" width=115><sub>Davi Guabiraba</sub>](https://github.com/DGuabiraba)
 
+[<img src="https://avatars.githubusercontent.com/u/114123981?v=4" width=115><sub>Erick Truzzi</sub>](https://github.com/Truzzi1)
+
+[<img src="https://avatars.githubusercontent.com/u/111322525?v=4" width=115><sub>Gustavo Silva</sub>](https://github.com/GustavoSilvalgs)
+
+[<img src="https://avatars.githubusercontent.com/u/67400064?v=4" width=115><sub>Rafael Dias</sub>](https://github.com/rafael-bit)
+
+[<img src="https://avatars.githubusercontent.com/u/118491601?v=4" width=115><sub>Ricardo Andretta</sub>](https://github.com/RickIX)
+
+[<img src="https://avatars.githubusercontent.com/u/86448522?v=4" width=115><sub>Thiago Sales</sub>](https://github.com/txiami)
+
+##
