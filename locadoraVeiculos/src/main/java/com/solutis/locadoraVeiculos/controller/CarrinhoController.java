@@ -1,7 +1,7 @@
 package com.solutis.locadoraVeiculos.controller;
 
+import com.solutis.locadoraVeiculos.model.Aluguel;
 import com.solutis.locadoraVeiculos.model.Carrinho;
-import com.solutis.locadoraVeiculos.model.ItemCarrinho;
 import com.solutis.locadoraVeiculos.model.Motorista;
 import com.solutis.locadoraVeiculos.model.Reserva;
 import com.solutis.locadoraVeiculos.service.CarrinhoService;
@@ -24,8 +24,8 @@ public class CarrinhoController {
 
     @PostMapping("/adicionar")
     @Operation(summary = "Adicionar item ao carrinho", description = "Adiciona um item ao carrinho de aluguel")
-    public ResponseEntity<Void> adicionarItem(@RequestBody ItemCarrinho itemCarrinho) {
-        carrinho.adicionarItem(itemCarrinho);
+    public ResponseEntity<Void> adicionarItem(@RequestBody Aluguel aluguel) {
+        carrinho.adicionarItem(aluguel);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

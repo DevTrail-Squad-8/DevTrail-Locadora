@@ -12,17 +12,13 @@ import java.util.List;
 @NoArgsConstructor
 public class Carrinho {
 
-    private List<ItemCarrinho> itens = new ArrayList<>();
+    private List<Aluguel> itens = new ArrayList<>();
 
-    public void adicionarItem(ItemCarrinho item) {
+    public void adicionarItem(Aluguel item) {
         this.itens.add(item);
     }
 
-    public void removerItem(ItemCarrinho item) {
+    public void removerItem(Aluguel item) {
         this.itens.remove(item);
-    }
-
-    public double calcularCustoTotal() {
-        return itens.stream().mapToDouble(ItemCarrinho::calcularCusto).sum();
     }
 }
