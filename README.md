@@ -116,4 +116,48 @@ http://localhost:8080/api/motoristas
 
 [<img src="https://avatars.githubusercontent.com/u/86448522?v=4" width=115><sub>Thiago Sales</sub>](https://github.com/txiami)
 
+
+<table style="width:100%">
+  <tr align=center>
+    <th><strong>Davi Guabiraba</strong></th>
+    <th><strong>Erick Truzzi</strong></th>
+    <th><strong>Gustavo Silva</strong></th>
+    <th><strong>Rafael Dias</strong></th>
+    <th><strong>Ricardo Andretta</strong></th>
+    <th><strong>Thiago Sales</strong></th>
+
+  </tr>
+  <tr align=center>
+    <td>
+      <a href="https://github.com/DGuabiraba">
+        <img width="200" height="180" src="https://avatars.githubusercontent.com/u/81264511?v=4">
+      </a>
+    </td>
+    <td>
+      <a href="https://github.com/Truzzi1">
+        <img width="200" height="180" src="https://avatars.githubusercontent.com/u/114123981?v=4">
+      </a>
+    </td>
+    <td>
+      <a href="https://github.com/GustavoSilvalgs">
+        <img width="200" height="180" src="hhttps://avatars.githubusercontent.com/u/111322525?v=4">
+      </a>
+    </td>
+    <td>
+      <a href="https://github.com/rafael-bit">
+        <img width="200" height="180" src="https://avatars.githubusercontent.com/u/67400064?v=4">
+      </a>
+    </td>
+    <td>
+      <a href="https://github.com/RickIX">
+        <img width="200" height="180" src="https://avatars.githubusercontent.com/u/118491601?v=4">
+      </a>
+       <a href="https://github.com/txiami">
+        <img width="200" height="180" src="https://avatars.githubusercontent.com/u/86448522?v=4">
+      </a>
+    </td>
+  </tr>
+</table>
+
+
 ##
