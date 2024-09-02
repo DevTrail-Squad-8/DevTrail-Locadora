@@ -152,6 +152,8 @@ http://localhost:8080/api/motoristas
       <a href="https://github.com/RickIX">
         <img width="200" height="180" src="https://avatars.githubusercontent.com/u/118491601?v=4">
       </a>
+           </td>
+    <td>
        <a href="https://github.com/txiami">
         <img width="200" height="180" src="https://avatars.githubusercontent.com/u/86448522?v=4">
       </a>
