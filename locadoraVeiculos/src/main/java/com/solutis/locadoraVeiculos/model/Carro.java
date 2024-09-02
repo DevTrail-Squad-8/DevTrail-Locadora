@@ -33,7 +33,7 @@ public class Carro {
 
     @Column
     @NotNull
-    private BigDecimal valorDiaria;
+    private Double valorDiaria;
 
     @Column
     private String imagem;

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -36,7 +37,6 @@ public class AluguelService {
     private Logger logger = Logger.getLogger(AluguelService.class.getName());
 
     public LerAluguelDto criarAluguel(CriarAluguelDto criarAluguelDTO) {
-
         Aluguel aluguelCriado = DozerMapper.parseObject(criarAluguelDTO, Aluguel.class);
         aluguelCriado.setDataPedido(LocalDate.now());
 
@@ -54,8 +54,25 @@ public class AluguelService {
                 .collect(Collectors.toList());
         aluguelCriado.setCarros(listaCarro);
 
+        if (criarAluguelDTO.getDataDevolucao().before(criarAluguelDTO.getDataEntrega())) {
+            criarAluguelDTO.setDataDevolucao(criarAluguelDTO.getDataEntrega());
+        }
+
+        aluguelCriado.setDataEntrega(criarAluguelDTO.getDataEntrega());
+        aluguelCriado.setDataDevolucao(criarAluguelDTO.getDataDevolucao());
+
+        double valorTotal = calcularValorTotal(listaCarro, criarAluguelDTO.getDataEntrega(), criarAluguelDTO.getDataDevolucao());
+        aluguelCriado.setValorTotal(valorTotal);
+
         aluguelCriado = aluguelRepository.save(aluguelCriado);
         return DozerMapper.parseObject(aluguelCriado, LerAluguelDto.class);
+    }
+
+    private double calcularValorTotal(List<Carro> carros, Date dataEntrega, Date dataDevolucao) {
+        long dias = (dataDevolucao.getTime() - dataEntrega.getTime()) / (1000 * 60 * 60 * 24);
+        return carros.stream()
+                .mapToDouble(carro -> carro.getValorDiaria() * dias)
+                .sum();
     }
 
     public LerAluguelDto retornarAlugueisById(Long id) {
