@@ -43,7 +43,8 @@ Este é um projeto de exemplo de uma aplicação Spring Boot 3.3 que simula o fu
    **OBS: NÃO TEM SENHA**
 
 ## Diagrama de Classes
-![Main](https://github.com/user-attachments/assets/4a3d38b1-5611-45fd-8fda-548c6ba71fd3)
+![Diagrama_de_classes](https://github.com/user-attachments/assets/03ba5b3d-6b95-428f-b809-e36bff59a3c0)
+
 
 
 ## ORDEM PARA USO DOS ENDPOINTS (EXEMPLOS)
