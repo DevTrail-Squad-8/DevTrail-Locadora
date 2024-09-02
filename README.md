@@ -2,14 +2,24 @@
 
 Este é um projeto de exemplo de uma aplicação Spring Boot 3.3 que simula o funcionamento de uma locadora de veículos. A aplicação fornece uma API REST para gerenciar veículos, clientes e reservas.
 
+## Requisitos
+- **Java 21**
+- **MYSQL**
+- **SGBD PARA MYSQL**
+
+
+
+
 ## Tecnologias Utilizadas
 
 - **Java 21**
 - **Spring Boot 3.3**
 - **Spring Data JPA**
 - **H2 Database** (Banco de dados em memória para testes)
+- **MYSQL**
 - **Springdoc OpenAPI** (Integração com Swagger para documentação da API)
 - **Maven** (Gestão de dependências e build)
+- **Dozer Mapper**
 
 ## Funcionalidades
 
@@ -35,18 +45,20 @@ Este é um projeto de exemplo de uma aplicação Spring Boot 3.3 que simula o fu
 ## Acesse a documentação da API: 
 
    Acesse a documentação da API em [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html).
-## Acesse o banco de dados H2: 
+## Acesse o banco de dados MYSQL: 
 
-   Acesse o banco de dados H2 em [http://localhost:8080/database](http://localhost:8080/database).# 
-   JDBC URL: jdbc:h2:mem:testdb
-   User Name: sa
-   **OBS: NÃO TEM SENHA**
+NOME DO BANCO DE DADOS: locadoradb   
+
+User Name: (nome do seu banco de dados)
+
+Senha: (sua senha do banco de dados)
+
 
 ## Diagrama de Classes
 ![Main](https://github.com/user-attachments/assets/4a3d38b1-5611-45fd-8fda-548c6ba71fd3)
 
 
-## ORDEM PARA USO DOS ENDPOINTS (EXEMPLOS)
+## TESTES PARA POPULAR BANCO DE DADOS
 
 **CRIAR FABRICANTE**
 http://localhost:8080/api/fabricantes
@@ -101,8 +113,30 @@ http://localhost:8080/api/motoristas
   "numeroCNH": "078912366"
 }
 ```
-
-
+**CRIAR APOLICES**
+http://localhost:8080/api/apolices
+```bash
+{
+  "valorFranquia": 100,
+  "protecaoTerceiro": true,
+  "protecaoCausasNaturais": true,
+  "protecaoRoubo": true
+}
+```
+**CRIAR ALUGUEIS**
+http://localhost:8080/api/alugueis
+```bash
+{
+  "dataEntrega": "2024-01-15",
+  "dataDevolucao": "2024-01-20",
+  "valorTotal": 0,
+  "motorista_id": 2,
+  "apolicesSeguro_id": 2,
+  "carros_id": [
+    2
+  ]
+}
+```
 ## COMPONENTES
 
 <table style="width:100%">
