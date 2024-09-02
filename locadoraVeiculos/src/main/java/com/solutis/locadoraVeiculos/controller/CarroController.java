@@ -13,11 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/api/carros")
 @Tag(name = "Carro", description = "Endpoints para Gerenciamento de Carros")
 public class CarroController {
@@ -28,11 +29,11 @@ public class CarroController {
     @PostMapping(
             consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    @Operation(summary = "Adicionar um novo Carro",
+    @Operation(summary = "Adicionar um nov Carro",
             description = "Adiciona um novo carro passando uma representação JSON ou XML do carro!",
             tags = {"Carro"},
             responses = {
-                    @ApiResponse(description = "Success", responseCode = "201",
+                    @ApiResponse(description = "Success", responseCode = "200",
                             content = @Content(schema = @Schema(implementation = CarroDto.class))
                     ),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
@@ -40,7 +41,7 @@ public class CarroController {
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
             }
     )
-    public ResponseEntity<LerCarroDto> cadastrarCarro(@RequestBody CarroDto carroDTO) {
+    public ResponseEntity<LerCarroDto> cadastrarCarro (@RequestBody CarroDto carroDTO){
         var carroCriado = carroService.criarCarro(carroDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(carroCriado);
     }
@@ -63,7 +64,7 @@ public class CarroController {
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
             }
     )
-    public ResponseEntity<List<LerCarroDto>> retornarCarros() {
+    public ResponseEntity<List<LerCarroDto>> retornarCarros (){
         var listaDeCarros = carroService.retornarTodosOsCarros();
         return ResponseEntity.status(HttpStatus.OK).body(listaDeCarros);
     }
@@ -83,9 +84,10 @@ public class CarroController {
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
             }
     )
-    public ResponseEntity<LerCarroDto> retornarCarroPorId(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<LerCarroDto> retornarCarroPorId (@PathVariable(value = "id") Long id){
         var carroRetornado = carroService.retornarCarroPorId(id);
         return ResponseEntity.status(HttpStatus.OK).body(carroRetornado);
+
     }
 
     @DeleteMapping(value = "/{id}")
@@ -100,8 +102,34 @@ public class CarroController {
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
             }
     )
-    public ResponseEntity<?> deletarCarroPorId(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<?> deletarCarroPorId (@PathVariable(value = "id") Long id){
         carroService.deletarCarro(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    public static class AdicionarAcessorioDTO {
+      public long idAcessorio;
+      public long idCarro;
+    }
+
+  @PostMapping(
+      consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
+      produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
+      value = "/acessorio")
+  @Operation(summary = "Adicionar um nov Carro",
+      description = "Adiciona um novo carro passando uma representação JSON ou XML do carro!",
+      tags = {"Carro"},
+      responses = {
+          @ApiResponse(description = "Success", responseCode = "200",
+              content = @Content(schema = @Schema(implementation = CarroDto.class))
+          ),
+          @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+          @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+          @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
+      }
+  )
+  public ResponseEntity<LerCarroDto> adicionarAcessorio (@RequestBody AdicionarAcessorioDTO dto){
+      var carro = carroService.adicionarAcessorio(dto.idCarro, dto.idAcessorio);
+      return ResponseEntity.status(HttpStatus.CREATED).body(new LerCarroDto(carro));
+  }
 }

@@ -57,4 +57,8 @@ public class Carro {
     @JsonIgnoreProperties("carros")
     private ModeloCarro modeloCarro;
 
+    public void AdicionarAcessorio(Acessorio acessorio){
+        acessorios.add(acessorio);
+    }
+
 }

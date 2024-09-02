@@ -27,7 +27,7 @@ public class Aluguel {
     @Column
     private Date dataDevolucao;
     @Column
-    private BigDecimal valorTotal;
+    private Double valorTotal;
 
 
     @ManyToOne

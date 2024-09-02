@@ -3,13 +3,13 @@ package com.solutis.locadoraVeiculos.service;
 import com.solutis.locadoraVeiculos.dtos.aluguelDtos.CriarAluguelDto;
 import com.solutis.locadoraVeiculos.dtos.aluguelDtos.LerAluguelDto;
 import com.solutis.locadoraVeiculos.exception.ResourceNotFoundException;
+import com.solutis.locadoraVeiculos.mapper.DozerMapper;
 import com.solutis.locadoraVeiculos.model.Aluguel;
 import com.solutis.locadoraVeiculos.model.Carro;
 import com.solutis.locadoraVeiculos.repository.AluguelRepository;
 import com.solutis.locadoraVeiculos.repository.ApoliceSeguroRepository;
 import com.solutis.locadoraVeiculos.repository.CarroRepository;
 import com.solutis.locadoraVeiculos.repository.MotoristaRepository;
-import com.solutis.locadoraVeiculos.mapper.DozerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,17 +49,13 @@ public class AluguelService {
         List<Carro> listaCarro = criarAluguelDTO
                 .getCarros_id()
                 .stream()
-                .map(idCarro -> {
-                    var carro = carroRepository.findById(idCarro)
-                            .orElseThrow(ResourceNotFoundException::new);
-                    return carro;
-                }).collect(Collectors.toList());
+                .map(idCarro -> carroRepository.findById(idCarro)
+                        .orElseThrow(ResourceNotFoundException::new))
+                .collect(Collectors.toList());
         aluguelCriado.setCarros(listaCarro);
 
         aluguelCriado = aluguelRepository.save(aluguelCriado);
-
-        LerAluguelDto lerAluguelDto = DozerMapper.parseObject(aluguelCriado, LerAluguelDto.class);
-        return lerAluguelDto;
+        return DozerMapper.parseObject(aluguelCriado, LerAluguelDto.class);
     }
 
     public LerAluguelDto retornarAlugueisById(Long id) {
@@ -69,8 +65,7 @@ public class AluguelService {
         Aluguel aluguel = aluguelRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Nenhum registro encontrado para este ID!"));
 
-        LerAluguelDto lerAluguelDto = DozerMapper.parseObject(aluguel, LerAluguelDto.class);
-        return lerAluguelDto;
+        return DozerMapper.parseObject(aluguel, LerAluguelDto.class);
     }
 
     public List<LerAluguelDto> retornarTodosAlugueis() {

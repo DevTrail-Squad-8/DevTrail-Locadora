@@ -7,23 +7,20 @@ import com.solutis.locadoraVeiculos.exception.DuplicateEmailException;
 import com.solutis.locadoraVeiculos.mapper.DozerMapper;
 import com.solutis.locadoraVeiculos.model.Motorista;
 import com.solutis.locadoraVeiculos.repository.MotoristaRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.solutis.locadoraVeiculos.mapper.DozerMapper;
 
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class MotoristaService {
 
-    private static final Logger logger = LoggerFactory.getLogger(MotoristaService.class);
+    private Logger logger = Logger.getLogger(MotoristaService.class.getName());
 
     @Autowired
     private MotoristaRepository repository;
-
-  
 
     public MotoristaDto create(MotoristaDto motoristaDto) {
 
@@ -55,7 +52,9 @@ public class MotoristaService {
         logger.info("Buscando todos os motoristas!");
 
         List<Motorista> listaMotorista = repository.findAll();
-        return DozerMapper.parseListObjects(listaMotorista, MotoristaDto.class);
+        return listaMotorista.stream()
+                .map(motorista -> DozerMapper.parseObject(motorista, MotoristaDto.class))
+                .collect(Collectors.toList());
     }
 
     public MotoristaDto update(MotoristaDto motoristaDto) {
@@ -64,13 +63,14 @@ public class MotoristaService {
 
         logger.info("Atualizando um motorista!");
 
-        Motorista entity = repository.findById(motoristaDto.getId())
+        var entity = repository.findById(motoristaDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Nenhum registro encontrado para este ID!"));
 
         if (!entity.getEmail().equals(motoristaDto.getEmail()) && emailExists(motoristaDto.getEmail()))
             throw new DuplicateEmailException("Erro! Email já registrado.");
 
-            DozerMapper.updateObject(motoristaDto, entity);
+        DozerMapper.updateObject(motoristaDto, entity);
+
         repository.save(entity);
 
         return motoristaDto;
@@ -80,7 +80,7 @@ public class MotoristaService {
 
         logger.info("Deletando um motorista!");
 
-        Motorista entity = repository.findById(id)
+        var entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Nenhum registro encontrado para este ID!"));
         repository.delete(entity);
     }
